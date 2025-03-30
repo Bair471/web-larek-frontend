@@ -1,87 +1,55 @@
-import { IBasketView, IEventEmitter } from "../types";
-import { View } from "./base/View";
+import { View } from './base/Component';
+import { cloneTemplate, createElement, ensureElement } from '../utils/utils';
+import { IEvents } from './base/events';
 
-export class BasketView extends View implements IBasketView {
-  protected items: {
-    element: HTMLElement;
-    id: string
-    }[] = [];
-  protected element: HTMLElement;
-  protected container: HTMLElement;
-  protected submitButton: HTMLButtonElement;
-  protected priceContainer: HTMLSpanElement;
-  protected events: IEventEmitter;
-  protected itemsCount: HTMLSpanElement;
-  protected itemIndexes: NodeListOf<HTMLSpanElement>;
+interface IBasketView {
+	items: HTMLElement[];
+	total: number;
+	selected: string[];
+}
 
-  constructor(element: HTMLElement, events: IEventEmitter) {
-    super(element, events);
+export class Basket extends View<IBasketView> {
+	static template = ensureElement<HTMLTemplateElement>('#basket');
 
-    const cartButton = document.querySelector('.header__basket') as HTMLButtonElement;
+	protected _list: HTMLElement;
+	protected _total: HTMLElement;
+	protected _button: HTMLElement;
 
-    this.itemsCount = document.querySelector('.header__basket-counter') as HTMLSpanElement;
-    
-    this.container = this.element.querySelector('.basket__list') as HTMLElement;
-    this.submitButton = this.element.querySelector('.basket__button') as HTMLButtonElement;
-    
-    this.priceContainer = this.element.querySelector('.basket__price') as HTMLSpanElement;
+	constructor(protected events: IEvents) {
+		super(cloneTemplate(Basket.template), events);
 
-    cartButton.addEventListener('click', (event) => {
-      this.events.emit('modal:open', {element: this.render()})
-    })
-    
-    this.submitButton.addEventListener('click', (event) => {
-      this.events.emit('cart:submit', this.items.map(item => item.id));
-    })
-    
-  }
+		this._list = ensureElement<HTMLElement>('.basket__list', this.container);
+		this._total = this.container.querySelector('.basket__price');
+		this._button = this.container.querySelector('.basket__button');
 
-  addItem(item: HTMLElement, itemId: string, sum: number) {
-    if(this.items.some(item => item.id === itemId)) return
+		if (this._button) {
+			this._button.addEventListener('click', () => {
+				events.emit('order:open');
+			});
+		}
 
-    this.items.push({
-      element: item,
-      id: itemId
-    });
+		this.items = [];
+	}
 
-    this.priceContainer.textContent = sum + " синапсов";
+	toggleButton(state: boolean) {
+		this.setDisabled(this._button, !state);
+	}
 
+	set items(items: HTMLElement[]) {
+		if (items.length) {
+			this._list.replaceChildren(...items);
+			this.toggleButton(true);
+		} else {
+			this._list.replaceChildren(
+				createElement<HTMLParagraphElement>('p', {
+					textContent: 'Корзина пуста',
+				})
+			);
+			this.toggleButton(false);
+		}
+	}
 
-    this.updateItemsCount();
-    this.render();
-  }
-
-  removeItem(itemId: string) {
-    this.items = this.items.filter((item) => item.id !== itemId);
-    this.updateItemsCount();
-    this.render();
-  }
-
-  clear() {
-    this.items = [];
-    this.updateItemsCount();
-    this.priceContainer.textContent = "0 синапсов";
-    this.render();
-  }
-
-  protected updateItemsCount() {
-    this.itemsCount.textContent = this.items.length + "";
-  }
-
-  render(): HTMLElement {
-    this.container.replaceChildren(...this.items.map((item) => item.element));
-
-    this.submitButton.disabled = (this.items.length === 0);
-
-    // нумерация товаров в корзине
-    this.itemIndexes = this.container.querySelectorAll('.basket__item-index') as NodeListOf<HTMLSpanElement>;
-    if(this.itemIndexes) {
-      this.itemIndexes.forEach((index, indexInArr) => {
-        index.textContent = indexInArr + 1 + "";
-      }, 0);  
-    }
-
-    return super.render();
-  }
-
+	set total(total: number) {
+		this.setText(this._total, `${total} синапсов`);
+	}
 }

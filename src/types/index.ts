@@ -1,88 +1,34 @@
-// интерфейс api
-export interface IDataApi {
-  getItems(): Promise<{items: IItem[]}>;
-  getItem(id: string): Promise<IItem>;
-  sendOrder(data: IOrder): Promise<object>;
+
+export interface IProduct {
+	id: string;
+	description: string;
+	image: string;
+	title: string;
+	category: string;
+	price: number | null;
 }
 
-// тип оплаты
-export enum PaymentType {
-  Online = 'online',
-  Cash = 'cash',
+export interface IBasket {
+	items: string[];
+	total: number;
 }
 
-// данные товара
-export interface IItem {
-  id: string;
-  description: string;
-  image: string;
-  title: string;
-  category: string;
-  price: number | null; // есть товар, у которого нет цены
-}
+export type PaymentMethod = 'cash' | 'card';
 
-// модель заказа
-export interface IOrderModel {
-  customerFullInfo: IOrder;
-  payment: PaymentType;
-  address: string;
-  email: string;
-  phone: string;
-  items: string[];
-  total: number;
-}
-
-// данные заказа
 export interface IOrder {
-  payment: PaymentType;
-  address: string;
-  email: string;
-  phone: string;
-  items: string[];
-  total: number;
+	payment: PaymentMethod;
+	email: string;
+	phone: string;
+	address: string;
+	items: string[];
+	total: number;
 }
 
-// интерфейс корзины
-export interface ICartModel {
-  add(item: Partial<IItem>): void;
-  remove(item: Partial<IItem>): void;
-  clear(): void;
-  total: number;
-}
+export type TOrder = Omit<IOrder, 'items' | 'total'>
+export type TOrderForm = Pick<IOrder, 'payment' | 'address'>;
+export type TContactsForm = Pick<IOrder, 'email' | 'phone'>;
 
-// интерфейс eventEmitter
-export interface IEventEmitter {
-  emit: (event: string, data?: unknown) => void
-}
-
-// интерфейс корзины
-export interface IBasketView {
-  addItem(item: HTMLElement, itemId: string, sum: number): void;
-  removeItem(itemId: string): void;
-  clear(): void;
-}
-
-// интерфейс товара
-export interface IItemView {
-  getCartItemView(element: HTMLElement): HTMLElement;
-  getModalItemView(element: HTMLElement): HTMLElement;
-  data: Partial<IItem>;
-}
-
-// интерфейс модального окна
-export interface IModalView {
-  openModal: (element: HTMLElement) => void;
-  closeModal: () => void;
-}
-
-// интерфейс базового класса вью
-export interface IView {
-  render(data?: unknown): HTMLElement;
-  toggleClass(element: HTMLElement, className: string): void;
-}
-
-// данные для передачи в eventEmitter
-export interface IEventData {
-  element: HTMLElement;
-  data?: Partial<IItem>;
+export interface IOrderResult {
+	id: string;
+	total: number;
 }
