@@ -41,3 +41,16 @@ const contactsForm = new ContactsForm(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events, {
 	onClick: () => modal.close(),
 });
+
+
+events.on('modal:open', () => {
+	page.locked = true;
+});
+
+events.on('modal:close', () => {
+	page.locked = false;
+});
+
+events.on('card:select', (item: IProduct) => {
+	appData.setPreview(item);
+});
