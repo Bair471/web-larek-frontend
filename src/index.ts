@@ -122,3 +122,60 @@ events.on('order:submit', () => {
 		}),
 	});
 });
+
+events.on(
+	/^order\..*:change$/,
+	(data: { field: keyof TOrder; value: string }) => {
+		appData.setOrderField(data.field, data.value);
+		appData.validateOrderForm();
+	}
+);
+
+events.on(
+	/^contacts\..*:change$/,
+	(data: { field: keyof TOrder; value: string }) => {
+		appData.setOrderField(data.field, data.value);
+		appData.validateContactsForm();
+	}
+);
+
+events.on('orderFormErrors:change', (error: Partial<TOrder>) => {
+	const { payment, address } = error;
+	const formIsValid = !payment && !address;
+	orderForm.valid = formIsValid;
+	if (!formIsValid) {
+		orderForm.errors = address;
+	} else {
+		orderForm.errors = '';
+	}
+});
+
+events.on('contactsFormErrors:change', (error: Partial<TOrder>) => {
+	const { email, phone } = error;
+	const formIsValid = !email && !phone;
+	contactsForm.valid = formIsValid;
+	if (!formIsValid) {
+		contactsForm.errors = email || phone;
+	} else {
+		contactsForm.errors = '';
+	}
+});
+
+events.on('contacts:submit', () => {
+	api
+		.createOrder({ ...appData.order, ...appData.basket })
+		.then((data) => {
+			modal.render({
+				content: success.render(),
+			});
+			success.total = data.total;
+			appData.clearBasket();
+			appData.clearOrder();
+		})
+		.catch(console.error)
+});
+
+api
+	.getProductList()
+	.then(appData.setItems.bind(appData))
+	.catch(console.error)
