@@ -63,3 +63,62 @@ events.on('items:change', (items: IProduct[]) => {
 		return card.render(item);
 	});
 });
+
+events.on('preview:change', (item: IProduct) => {
+	const card = new Card(cloneTemplate(cardPreviewTemplate), {
+		onClick: () => {
+			if (appData.isInBasket(item)) {
+				appData.removeFromBasket(item);
+				card.button = 'В корзину';
+			} else {
+				appData.addToBasket(item);
+				card.button = 'Удалить из корзины';
+			}
+		},
+	});
+
+	card.button = appData.isInBasket(item) ? 'Удалить из корзины' : 'В корзину';
+	modal.render({ content: card.render(item) });
+});
+
+events.on('basket:change', () => {
+	page.counter = appData.basket.items.length;
+	basket.items = appData.basket.items.map((id) => {
+		const item = appData.items.find((item) => item.id === id);
+		const card = new Card(cloneTemplate(cardBasketTemplate), {
+			onClick: () => appData.removeFromBasket(item),
+		});
+		return card.render(item);
+	});
+
+	basket.total = appData.basket.total;
+});
+
+events.on('basket:open', () => {
+	modal.render({
+		content: basket.render(),
+	});
+});
+
+events.on('order:open', () => {
+	appData.clearOrder();
+	modal.render({
+		content: orderForm.render({
+			payment: 'card',
+			address: '',
+			valid: false,
+			errors: [],
+		}),
+	});
+});
+
+events.on('order:submit', () => {
+	modal.render({
+		content: contactsForm.render({
+			email: '',
+			phone: '',
+			valid: false,
+			errors: [],
+		}),
+	});
+});
