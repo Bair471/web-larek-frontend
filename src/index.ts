@@ -54,3 +54,12 @@ events.on('modal:close', () => {
 events.on('card:select', (item: IProduct) => {
 	appData.setPreview(item);
 });
+
+events.on('items:change', (items: IProduct[]) => {
+	page.catalog = items.map((item) => {
+		const card = new Card(cloneTemplate(cardCatalogTemplate), {
+			onClick: () => events.emit('card:select', item),
+		});
+		return card.render(item);
+	});
+});
