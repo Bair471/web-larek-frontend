@@ -2,7 +2,7 @@ import { AppData } from './components/AppData';
 import { Card } from './components/Card';
 import { OrderForm } from './components/OrderForm';
 import { Page } from './components/Page';
-import { WebLarekAPI } from './components/WebLarekApi';
+import { WebLarekAPI } from './components/LarekApi';
 import { EventEmitter } from './components/base/events';
 import { Basket } from './components/Basket';
 import { Modal } from './components/common/Modal';
@@ -11,7 +11,7 @@ import './scss/styles.scss';
 import { IProduct, TOrder } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
-import { ContactsForm } from './components/ContactsForm';
+import { Contacts } from './components/Contacts';
 
 const api = new WebLarekAPI(CDN_URL, API_URL);
 
@@ -35,7 +35,7 @@ const modal = new Modal(modalCardTemplate, events);
 const page = new Page(document.body, events);
 const basket = new Basket(events);
 const orderForm = new OrderForm(cloneTemplate(orderTemplate), events);
-const contactsForm = new ContactsForm(cloneTemplate(contactsTemplate), events);
+const contactsForm = new Contacts(cloneTemplate(contactsTemplate), events);
 const success = new Success(cloneTemplate(successTemplate), events, {
 	onClick: () => modal.close(),
 });

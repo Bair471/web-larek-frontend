@@ -3,7 +3,7 @@ import { TContactsForm } from '../types';
 import { IEvents } from './base/events';
 import { ensureElement } from '../utils/utils';
 
-export class ContactsForm extends Form<TContactsForm> {
+export class Contacts extends Form<TContactsForm> {
 	protected _email: HTMLInputElement;
 	protected _phone: HTMLInputElement;
 
