@@ -3,7 +3,7 @@ import { Card } from './components/Card';
 import { OrderForm } from './components/OrderForm';
 import { Page } from './components/Page';
 import { WebLarekAPI } from './components/WebLarekApi';
-import { EventEmitter } from './components/base/Events';
+import { EventEmitter } from './components/base/events';
 import { Basket } from './components/Basket';
 import { Modal } from './components/common/Modal';
 import { Success } from './components/Success';

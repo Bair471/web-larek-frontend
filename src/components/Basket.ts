@@ -1,6 +1,6 @@
 import { View } from './base/Component';
 import { cloneTemplate, createElement, ensureElement } from '../utils/utils';
-import { IEvents } from './base/Events';
+import { IEvents } from './base/events';
 
 interface IBasketView {
 	items: HTMLElement[];

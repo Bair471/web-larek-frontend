@@ -1,6 +1,6 @@
 import { IBasket, IProduct, PaymentMethod, TOrder } from '../types';
 import { EMAIL_REGEXP, TEL_REGEXP } from '../utils/constants';
-import { IEvents } from './base/Events';
+import { IEvents } from './base/events';
 
 export class AppData {
 	items: IProduct[] = [];
