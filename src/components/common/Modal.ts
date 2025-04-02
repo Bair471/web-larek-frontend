@@ -1,6 +1,6 @@
 import {View} from "../base/Component";
 import {ensureElement} from "../../utils/utils";
-import {IEvents} from "../base/events";
+import {IEvents} from "../base/Events";
 
 interface IModalData {
     content: HTMLElement;
@@ -26,12 +26,12 @@ export class Modal extends View<IModalData> {
     }
 
     open() {
-        this.toggleClass(this.container, '.modal_active', true);
+        this.toggleClass(this.container, 'modal_active', true);
         this.events.emit('modal:open');
     }
 
     close() {
-        this.toggleClass(this.container, '.modal_active', false);
+        this.toggleClass(this.container, 'modal_active', false);
         this.content = null;
         this.events.emit('modal:close');
     }
@@ -42,4 +42,3 @@ export class Modal extends View<IModalData> {
         return this.container;
     }
 }
-
