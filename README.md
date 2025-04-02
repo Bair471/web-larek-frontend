@@ -35,9 +35,14 @@ yarn start
 npm run build
 ```
 
+
 или
 
 ```
 yarn build
 ```
 TEST 
+
+UML-схема
+[web-larek-green-black-text](https://github.com/user-attachments/assets/2873511a-7a66-41aa-9061-837d692969b8)
+
